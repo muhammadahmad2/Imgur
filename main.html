@@ -1,0 +1,156 @@
+<head>
+<script type="text/javascript" src="jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="http://test.gfycat.com/gfycat_test_june25.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+</head>
+
+<body>
+	<table>
+	
+	<tr>
+		<td>
+			<label for="subs">Sub:</label>
+		</td>
+		<td>
+			<input type=text id="subs" value="mostbeautiful">
+		</td>
+		<td>
+			<label for="page">Page:</label>
+		</td>
+		<td>
+			<input type=text id="page" value="1" size="3">
+			
+
+			<select id="sort" class="btn btn-secondary dropdown-toggle">				
+				<option value="top">Top</option>
+				<option value="time">Time</option>
+			</select>
+
+			<select id="range" class="btn btn-secondary dropdown-toggle">
+				<option value="all">All</option>
+				<option value="year">Year</option>
+				<option value="month">Month</option>
+				<option value="week">Week</option>
+				<option value="day">Day</option>	
+			</select>
+		</td>
+		<td>
+			<div class="btn-group" role="group" aria-label="Basic example">
+				<button type="button" class="btn btn-secondary" onclick="setValues()">Go</button>
+				<button type="button" class="btn btn-secondary" onclick="pre()">Pre</button>
+				<button type="button" class="btn btn-secondary" onclick="next()">Next</button>
+			</div>
+		</td>
+
+		
+		
+	</tr>
+	</table>
+	
+  <ul style="margin: 0; padding: 2px;">
+  	
+  </ul>
+
+<script language="javascript" type="text/javascript">
+
+var param1var = getQueryVariable("param1");
+if (param1var != '') {
+	document.getElementById("subs").value = param1var;
+}
+
+
+function setValues() {
+
+	var subreddit = document.getElementById("subs").value;
+	var page = document.getElementById("page").value;
+	
+	var sort = document.getElementById("sort").value;
+	var range = document.getElementById("range").value;
+
+	sub(subreddit,page,sort,range);
+	
+}
+
+function pre() {
+
+	var new1 = parseInt(document.getElementById("page").value) - 1;
+	document.getElementById("page").value = new1;
+	
+	var subreddit = document.getElementById("subs").value;
+	var page = document.getElementById("page").value;
+	
+	var sort = document.getElementById("sort").value;
+	var range = document.getElementById("range").value;
+
+	sub(subreddit,page,sort,range);
+	
+}
+
+
+function next() {
+
+	var new1 = parseInt(document.getElementById("page").value) + 1;
+	document.getElementById("page").value = new1;
+	
+	
+	var subreddit = document.getElementById("subs").value;
+	var page = document.getElementById("page").value;
+	
+	var sort = document.getElementById("sort").value;
+	var range = document.getElementById("range").value;
+
+
+	sub(subreddit,page,sort,range);
+
+}
+	
+function getQueryVariable(variable) {
+	  var query = window.location.search.substring(1);
+	  var vars = query.split("?");
+	  return vars;
+}
+	
+
+function sub(subreddit,page,sort,range) {
+	var cliendid = "633778290b71d1e"
+	var access_token = "e0d2f33a4e500821486377a5ab43684ce4694971"
+
+	var text = '';
+	
+
+	var settings = {
+	  "async": true,
+	  "crossDomain": true,
+	  "url": "https://api.imgur.com/3/gallery/r/" + subreddit + "/" + sort + "/" + range + "/" + page + "?access_token=" + access_token,
+	  "method": "GET",
+	  "headers": {
+	    "authorization": "Client-ID " + cliendid
+	  }
+	}
+
+	$.ajax(settings).success(function (response) {
+		console.log(response);
+		var col = 3
+		var wid = ($(window).width()-100)/col
+		var dat = response.data
+		text = '<table class="table table-dark table-bordered table-responsive-md"><tr scope="row">'
+		for (var i in dat) {		
+			var d = dat[i];
+			if (i % col == 0) {
+				text += '</tr><tr scope="row">'
+			}
+
+			text += '<td><a href=' + d.link + '><img src=' + d.link + ' style="max-height: ' + wid + 'px; max-width: ' + wid + 'px; padding: 2px; class="img-fluid"/></a></td>';
+
+		}
+		text += ' </tr></table>'
+		$('ul').empty();
+		$('ul').append(text);
+	});
+
+
+}
+</script>
+	
+
+</body>
